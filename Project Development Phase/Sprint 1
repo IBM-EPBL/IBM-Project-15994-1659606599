@@ -1,1 +1,73 @@
+from flask import Flask, render_template, flash, request, session,send_file
+from flask import render_template, redirect, url_for, request
+import warnings
+import datetime
+import cv2
 
+
+
+app = Flask(__name__)
+app.config['DEBUG']
+app.config['SECRET_KEY'] = '7d441f27d441f27567d441f2b6176a'
+
+@app.route("/")
+def homepage():
+
+    return render_template('index.html')
+
+
+
+@app.route("/Training")
+def Training():
+    return render_template('Tranning.html')
+
+@app.route("/Test")
+def Test():
+    return render_template('Test.html')
+
+
+
+
+@app.route("/train", methods=['GET', 'POST'])
+def train():
+    if request.method == 'POST':
+        import model as model
+
+        return render_template('Tranning.html')
+
+
+
+
+
+@app.route("/testimage", methods=['GET', 'POST'])
+def testimage():
+    if request.method == 'POST':
+
+
+        file = request.files['fileupload']
+        file.save('static/Out/Test.jpg')
+
+        img = cv2.imread('static/Out/Test.jpg')
+        if img is None:
+            print('no data')
+
+        img1 = cv2.imread('static/Out/Test.jpg')
+        print(img.shape)
+        img = cv2.resize(img, ((int)(img.shape[1] / 5), (int)(img.shape[0] / 5)))
+        original = img.copy()
+        neworiginal = img.copy()
+        cv2.imshow('original', img1)
+        gray = cv2.cvtColor(img1, cv2.COLOR_BGR2GRAY)
+
+        img1S = cv2.resize(img1, (960, 540))
+
+        cv2.imshow('Original image', img1S)
+        grayS = cv2.resize(gray, (960, 540))
+        cv2.imshow('Gray image', grayS)
+
+        gry = 'static/Out/gry.jpg'
+
+        cv2.imwrite(gry, grayS)
+        from PIL import  ImageOps,Image
+
+        
